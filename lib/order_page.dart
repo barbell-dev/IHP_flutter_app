@@ -268,6 +268,7 @@ class _OrderPageState extends State<OrderPage> {
                       ),
                       SizedBox(height: 16.0),
                       DataTable(
+                        columnSpacing: 8,
                         columns: [
                           DataColumn(label: Text('Chocolate')),
                           DataColumn(label: Text('Variant')),
