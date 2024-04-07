@@ -8,7 +8,7 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   String? selectedChocolate;
   String? selectedVariant;
-  int quantity = 1; // Default quantity is 1
+  int quantity = 0; // Default quantity is 0
   int bagCount = 0;
   List<Order> orders = [];
 
@@ -74,11 +74,10 @@ class _OrderPageState extends State<OrderPage> {
                 );
               }).toList(),
               onChanged: (String? value) {
-                // Change the parameter type to String?
                 setState(() {
                   selectedChocolate = value;
                   selectedVariant = null; // Reset variant selection
-                  quantity = 1; // Reset quantity
+                  quantity = 0; // Reset quantity
                 });
               },
             ),
@@ -89,7 +88,6 @@ class _OrderPageState extends State<OrderPage> {
               hint: Text('Select Variant'),
               items: _buildVariantItems(selectedChocolate),
               onChanged: (String? value) {
-                // Change the parameter type to String?
                 setState(() {
                   selectedVariant = value;
                 });
@@ -97,8 +95,8 @@ class _OrderPageState extends State<OrderPage> {
             ),
             SizedBox(height: 16.0),
             // Quantity TextField
-            TextField(
-              enabled: selectedChocolate != null,
+            TextFormField(
+              enabled: selectedChocolate != null && selectedVariant != null,
               decoration: InputDecoration(
                 labelText: 'Quantity',
                 filled: true,
@@ -107,14 +105,14 @@ class _OrderPageState extends State<OrderPage> {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
-                  quantity = int.tryParse(value) ?? 1;
+                  quantity = int.tryParse(value) ?? 0;
                 });
               },
             ),
             SizedBox(height: 16.0),
             // Add to Bag Button
             ElevatedButton(
-              onPressed: selectedChocolate != null ? () => addToBag() : null,
+              onPressed: _isAddToBagEnabled() ? () => addToBag() : null,
               child: Text('Add to Bag'),
             ),
             SizedBox(height: 16.0),
@@ -130,6 +128,10 @@ class _OrderPageState extends State<OrderPage> {
         ),
       ),
     );
+  }
+
+  bool _isAddToBagEnabled() {
+    return selectedChocolate != null && selectedVariant != null && quantity > 0;
   }
 
   Widget _buildPricingTable() {
@@ -223,55 +225,133 @@ class _OrderPageState extends State<OrderPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              int totalPrice = _calculateTotalPrice();
+              return Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    'Your Orders',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  DataTable(
-                    columns: [
-                      DataColumn(label: Text('Chocolate')),
-                      DataColumn(label: Text('Variant')),
-                      DataColumn(label: Text('Quantity')),
-                    ],
-                    rows: orders.map((order) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(order.chocolate)),
-                          DataCell(Text(order.variant)),
-                          DataCell(Text(order.quantity.toString())),
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Your Orders',
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              setState(() {
+                                // Update the bag count when the dialog is closed
+                                bagCount = _calculateBagCount();
+                              });
+                            },
+                          ),
                         ],
-                      );
-                    }).toList(),
+                      ),
+                      SizedBox(height: 16.0),
+                      DataTable(
+                        columns: [
+                          DataColumn(label: Text('Chocolate')),
+                          DataColumn(label: Text('Variant')),
+                          DataColumn(label: Text('Quantity')),
+                          DataColumn(label: Text('Actions')),
+                        ],
+                        rows: orders.map((order) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(order.chocolate)),
+                              DataCell(Text(order.variant)),
+                              DataCell(Text(order.quantity.toString())),
+                              DataCell(Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.remove),
+                                    onPressed: () {
+                                      setState(() {
+                                        if (order.quantity > 1) {
+                                          order.quantity--;
+                                          totalPrice -= _calculatePrice(order);
+                                          bagCount--;
+                                        } else {
+                                          orders.remove(order);
+                                          totalPrice -= _calculatePrice(order);
+                                          bagCount -= order.quantity;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      setState(() {
+                                        totalPrice -= _calculatePrice(order);
+                                        bagCount -= order.quantity;
+                                        orders.remove(order);
+                                      });
+                                    },
+                                  ),
+                                ],
+                              )),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        'Total Price: \u{20B9}$totalPrice',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       },
     );
+  }
+
+  int _calculateTotalPrice() {
+    int totalPrice = 0;
+    for (Order order in orders) {
+      totalPrice += _calculatePrice(order);
+    }
+    return totalPrice;
+  }
+
+  int _calculatePrice(Order order) {
+    final Map<String, int> prices = {
+      '10g - Regular': 10,
+      '35g - Regular': 30,
+      '110g - Regular': 80,
+      '110g - Silk': 95,
+    };
+
+    return prices[order.variant]! * order.quantity;
+  }
+
+  int _calculateBagCount() {
+    int count = 0;
+    for (Order order in orders) {
+      count += order.quantity;
+    }
+    return count;
   }
 }
 
@@ -281,4 +361,11 @@ class Order {
   int quantity;
 
   Order(this.chocolate, this.variant, this.quantity);
+}
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: OrderPage(),
+  ));
 }
