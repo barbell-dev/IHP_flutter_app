@@ -81,7 +81,7 @@ class _OrderPageState extends State<OrderPage> {
                     selectedVariant =
                         null; // Reset variant selection only if the previously selected variant is not available for the newly selected chocolate
                   }
-                  quantity = 0; // Reset quantity
+                  // quantity = 0; // No need to reset quantity here
                 });
               },
             ),
@@ -90,7 +90,16 @@ class _OrderPageState extends State<OrderPage> {
             DropdownButtonFormField<String>(
               value: selectedVariant,
               hint: Text('Select Variant'),
-              items: _buildVariantItems(selectedChocolate),
+              items: _buildVariantItems(selectedChocolate).map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                        fontFamily: 'GooglePoppins', color: Colors.black),
+                  ),
+                );
+              }).toList(),
               onChanged: (String? value) {
                 setState(() {
                   selectedVariant = value;
@@ -100,7 +109,7 @@ class _OrderPageState extends State<OrderPage> {
             SizedBox(height: 16.0),
             // Quantity TextField
             TextFormField(
-              enabled: selectedChocolate != null && selectedVariant != null,
+              enabled: true,
               decoration: InputDecoration(
                 labelText: 'Quantity',
                 filled: true,
@@ -172,7 +181,7 @@ class _OrderPageState extends State<OrderPage> {
     return rows;
   }
 
-  List<DropdownMenuItem<String>> _buildVariantItems(String? chocolate) {
+  List<String> _buildVariantItems(String? chocolate) {
     List<String> variants = [];
 
     if (chocolate == 'Dairy Milk') {
@@ -182,15 +191,7 @@ class _OrderPageState extends State<OrderPage> {
       variants.addAll(['10g - Regular', '35g - Regular', '110g - Regular']);
     }
 
-    return variants.map((String value) {
-      return DropdownMenuItem<String>(
-        value: value,
-        child: Text(
-          value,
-          style: TextStyle(fontFamily: 'GooglePoppins', color: Colors.black),
-        ),
-      );
-    }).toList();
+    return variants;
   }
 
   void addToBag() {
