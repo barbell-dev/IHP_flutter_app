@@ -76,7 +76,11 @@ class _OrderPageState extends State<OrderPage> {
               onChanged: (String? value) {
                 setState(() {
                   selectedChocolate = value;
-                  selectedVariant = null; // Reset variant selection
+                  if (!(_buildVariantItems(selectedChocolate) as List<String>)
+                      .contains(selectedVariant)) {
+                    selectedVariant =
+                        null; // Reset variant selection only if the previously selected variant is not available for the newly selected chocolate
+                  }
                   quantity = 0; // Reset quantity
                 });
               },
