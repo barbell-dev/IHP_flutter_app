@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'checkout.dart'; // Import the new checkout page
+import 'order.dart';
 
 class OrderPage extends StatefulWidget {
   @override
@@ -134,7 +136,12 @@ class _OrderPageState extends State<OrderPage> {
             SizedBox(height: 16.0),
             // Checkout Button
             ElevatedButton(
-              onPressed: bagCount > 0 ? () => checkout() : null,
+              onPressed: bagCount > 0
+                  ? () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CheckoutPage(orders: orders)))
+                  : null,
               child: Text('Checkout'),
             ),
           ],
@@ -361,13 +368,13 @@ class _OrderPageState extends State<OrderPage> {
   }
 }
 
-class Order {
-  final String chocolate;
-  final String variant;
-  int quantity;
+// class Order {
+//   final String chocolate;
+//   final String variant;
+//   int quantity;
 
-  Order(this.chocolate, this.variant, this.quantity);
-}
+//   Order(this.chocolate, this.variant, this.quantity);
+// }
 
 void main() {
   runApp(MaterialApp(
