@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'checkout.dart'; // Import the new checkout page
 import 'order.dart';
 
+export 'order_page.dart';
+
+// int totalPrice = 0;
+
 class OrderPage extends StatefulWidget {
   @override
   _OrderPageState createState() => _OrderPageState();
+  static Map<String, int> get prices => _OrderPageState.prices;
 }
 
 class _OrderPageState extends State<OrderPage> {
@@ -13,7 +18,12 @@ class _OrderPageState extends State<OrderPage> {
   int quantity = 0; // Default quantity is 0
   int bagCount = 0;
   List<Order> orders = [];
-
+  static final Map<String, int> prices = {
+    '10g - Regular': 10,
+    '35g - Regular': 30,
+    '110g - Regular': 80,
+    '110g - Silk': 95,
+  };
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,9 +148,14 @@ class _OrderPageState extends State<OrderPage> {
             ElevatedButton(
               onPressed: bagCount > 0
                   ? () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CheckoutPage(orders: orders)))
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CheckoutPage(
+                              orders: orders,
+                              totalPrice:
+                                  _calculateTotalPrice()), // Pass totalPrice
+                        ),
+                      )
                   : null,
               child: Text('Checkout'),
             ),
@@ -165,13 +180,6 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   List<DataRow> _buildPricingRows() {
-    final Map<String, int> prices = {
-      '10g - Regular': 10,
-      '35g - Regular': 30,
-      '110g - Regular': 80,
-      '110g - Silk': 95,
-    };
-
     List<DataRow> rows = [];
     prices.forEach((variant, price) {
       rows.add(DataRow(
