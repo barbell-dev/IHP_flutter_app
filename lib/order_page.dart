@@ -233,9 +233,9 @@ class _OrderPageState extends State<OrderPage> {
     });
   }
 
-  void checkout() {
-    // Add functionality for checkout button
-  }
+  // void checkout() {
+  //   // Add functionality for checkout button
+  // }
 
   void _showOrdersDialog() {
     showDialog(

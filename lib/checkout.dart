@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'order.dart'; // Import the Order class
 import 'order_page.dart';
 import 'dart:io';
+import 'payment_page.dart';
 
 class CheckoutPage extends StatelessWidget {
   final List<Order> orders;
@@ -82,6 +83,7 @@ class CheckoutPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text("Your Cart"),
             Expanded(
               child: ListView.builder(
                 itemCount: orders.length,
@@ -110,7 +112,16 @@ class CheckoutPage extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _generateAndOpenPDF,
-              child: Text('Download PDF'),
+              child: Text('Download PDF of your orders'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PaymentPage()),
+                );
+              },
+              child: Text("Proceed to payment"),
             ),
           ],
         ),
