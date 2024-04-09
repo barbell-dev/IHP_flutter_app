@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'order_page.dart';
 
-class LandingPage extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
