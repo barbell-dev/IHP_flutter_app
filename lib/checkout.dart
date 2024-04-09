@@ -8,6 +8,7 @@ import 'order.dart'; // Import the Order class
 import 'order_page.dart';
 import 'payment_page.dart';
 import 'package:printing/printing.dart';
+import 'package:flutter/services.dart';
 
 class CheckoutPage extends StatelessWidget {
   final List<Order> orders;
@@ -18,7 +19,10 @@ class CheckoutPage extends StatelessWidget {
 
   Future<void> _generateAndOpenPDF() async {
     final pdf = pdfLib.Document();
-
+    final font = await rootBundle.load("lib/fonts/inr.ttf");
+    final ttf = pdfLib.Font.ttf(font);
+    final poppins = await rootBundle.load("lib/fonts/poppinssb.ttf");
+    final pps = pdfLib.Font.ttf(poppins);
     // Add content to the PDF
     pdf.addPage(
       pdfLib.Page(
@@ -32,11 +36,12 @@ class CheckoutPage extends StatelessWidget {
                   style: pdfLib.TextStyle(
                     fontSize: 20,
                     fontWeight: pdfLib.FontWeight.bold,
+                    font: pps,
                   ),
                 ),
               ),
               pdfLib.SizedBox(height: 20),
-              pdfLib.Table.fromTextArray(
+              pdfLib.TableHelper.fromTextArray(
                 context: context,
                 data: [
                   ['Chocolate', 'Variant', 'Quantity', 'Price'],
@@ -44,21 +49,23 @@ class CheckoutPage extends StatelessWidget {
                         order.chocolate,
                         order.variant,
                         order.quantity.toString(),
-                        '₹${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
+                        '\u{20B9}${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
                       ]),
                 ],
                 headerStyle:
                     pdfLib.TextStyle(fontWeight: pdfLib.FontWeight.bold),
                 cellAlignment: pdfLib.Alignment.centerLeft,
                 cellPadding: pdfLib.EdgeInsets.all(10),
+                cellStyle: pdfLib.TextStyle(font: pps),
               ),
               pdfLib.SizedBox(height: 20),
               pdfLib.Center(
                 child: pdfLib.Text(
-                  'Total: ₹$totalPrice',
+                  'Total: \u{20B9}$totalPrice',
                   style: pdfLib.TextStyle(
                     fontSize: 18,
                     fontWeight: pdfLib.FontWeight.bold,
+                    font: pps,
                   ),
                 ),
               ),
@@ -109,7 +116,7 @@ class CheckoutPage extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
             Text(
-              'Total price : $totalPrice',
+              'Total price : \u{20B9}$totalPrice',
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,

@@ -30,3 +30,7 @@ flutter:
     - family: poppinssb
       fonts:
         - asset: lib/fonts/poppinssb.ttf
+
+    - family: inr
+      fonts:
+        - asset: lib/fonts/inr.ttf
