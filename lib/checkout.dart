@@ -1,12 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfLib;
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'order.dart'; // Import the Order class
 import 'order_page.dart';
-import 'dart:io';
 import 'payment_page.dart';
+import 'package:printing/printing.dart';
 
 class CheckoutPage extends StatelessWidget {
   final List<Order> orders;
@@ -38,17 +39,28 @@ class CheckoutPage extends StatelessWidget {
               pdfLib.Table.fromTextArray(
                 context: context,
                 data: [
-                  ['Chocolate', 'Variant', 'Quantity'],
+                  ['Chocolate', 'Variant', 'Quantity', 'Price'],
                   ...orders.map((order) => [
                         order.chocolate,
                         order.variant,
                         order.quantity.toString(),
+                        '₹${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
                       ]),
                 ],
                 headerStyle:
                     pdfLib.TextStyle(fontWeight: pdfLib.FontWeight.bold),
                 cellAlignment: pdfLib.Alignment.centerLeft,
                 cellPadding: pdfLib.EdgeInsets.all(10),
+              ),
+              pdfLib.SizedBox(height: 20),
+              pdfLib.Center(
+                child: pdfLib.Text(
+                  'Total: ₹$totalPrice',
+                  style: pdfLib.TextStyle(
+                    fontSize: 18,
+                    fontWeight: pdfLib.FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           );
@@ -63,13 +75,8 @@ class CheckoutPage extends StatelessWidget {
     final file = File('${output.path}/order_summary.pdf');
     await file.writeAsBytes(await pdf.save());
 
-    // Open the PDF file in a popup window
-    final url = 'file://${file.path}';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+    // Print the PDF file
+    await Printing.sharePdf(bytes: await file.readAsBytes());
   }
 
   @override
@@ -93,7 +100,7 @@ class CheckoutPage extends StatelessWidget {
                     child: ListTile(
                       title: Text('Chocolate: ${order.chocolate}'),
                       subtitle: Text(
-                        'Variant: ${order.variant}\nQuantity: ${order.quantity}\nPrice: ${order.quantity} * ${OrderPage.prices[order.variant]} = ${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
+                        'Variant: ${order.variant}\nQuantity: ${order.quantity}\nPrice: ${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
                       ),
                     ),
                   );
