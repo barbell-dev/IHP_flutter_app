@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'otp_page.dart';
 
 class SignupPage extends StatelessWidget {
   @override
@@ -35,9 +35,11 @@ class SignupPage extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                // Perform signup action
-                // After signup, navigate back to login page
-                Navigator.pop(context);
+                // Navigate to OTPPage on signup
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OTPPage()),
+                );
               },
               child: Text('Signup'),
             ),

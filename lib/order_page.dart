@@ -47,7 +47,7 @@ class _OrderPageState extends State<OrderPage> {
                     radius: 10,
                     child: Text(
                       '$bagCount',
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -230,12 +230,18 @@ class _OrderPageState extends State<OrderPage> {
 
       // Increase bag count by the selected quantity
       bagCount += quantity;
+      _updateBagCount();
     });
   }
 
   // void checkout() {
   //   // Add functionality for checkout button
   // }
+  void _updateBagCount() {
+    setState(() {
+      bagCount = _calculateBagCount();
+    });
+  }
 
   void _showOrdersDialog() {
     showDialog(
@@ -272,11 +278,12 @@ class _OrderPageState extends State<OrderPage> {
                           IconButton(
                             icon: Icon(Icons.close),
                             onPressed: () {
+                              // setState(() {
+                              //   // Update the bag count when the dialog is closed
+                              //   bagCount = _calculateBagCount();
+                              // });
+                              _updateBagCount();
                               Navigator.pop(context);
-                              setState(() {
-                                // Update the bag count when the dialog is closed
-                                bagCount = _calculateBagCount();
-                              });
                             },
                           ),
                         ],
@@ -303,14 +310,18 @@ class _OrderPageState extends State<OrderPage> {
                                     onPressed: () {
                                       setState(() {
                                         if (order.quantity > 1) {
+                                          // orders.remove(order);
                                           order.quantity--;
                                           totalPrice -= _calculatePrice(order);
-                                          bagCount--;
                                         } else {
                                           orders.remove(order);
                                           totalPrice -= _calculatePrice(order);
-                                          bagCount -= order.quantity;
                                         }
+                                        _updateBagCount();
+                                        // Update the bag count immediately after deleting the order
+                                        // setState(() {
+                                        //   bagCount = _calculateBagCount();
+                                        // });
                                       });
                                     },
                                   ),
@@ -319,9 +330,14 @@ class _OrderPageState extends State<OrderPage> {
                                     onPressed: () {
                                       setState(() {
                                         totalPrice -= _calculatePrice(order);
-                                        bagCount -= order.quantity;
+
                                         orders.remove(order);
+                                        _updateBagCount();
                                       });
+                                      // Update the bag count immediately after deleting the order
+                                      // setState(() {
+                                      //   bagCount = _calculateBagCount();
+                                      // });
                                     },
                                   ),
                                 ],
