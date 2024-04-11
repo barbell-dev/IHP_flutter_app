@@ -21,11 +21,11 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
-    twilioClient = TwilioFlutter(
-      accountSid: 'ACef4000326b184edc0aeccfa567a277db',
-      authToken: 'e4e9ddd7e33abda75fbaebbcc97fd4fb',
-      twilioNumber: '+1 205 236 0176', // Replace with your Twilio phone number
-    );
+    // twilioClient = TwilioFlutter(
+    //   accountSid: 'ACef4000326b184edc0aeccfa567a277db',
+    //   authToken: 'e4e9ddd7e33abda75fbaebbcc97fd4fb',
+    //   twilioNumber: '+1 205 236 0176', // Replace with your Twilio phone number
+    // );
   }
 
   bool _isPhoneNumberValid(String? value) {
