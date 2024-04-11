@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xyz_chocolates/login_page.dart';
+import 'package:xyz_chocolates/order_page.dart';
 
 class OTPPage extends StatefulWidget {
   final String otp;
@@ -28,13 +29,13 @@ class _OTPPageState extends State<OTPPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Registration Successful'),
-        content: Text('You can now proceed to the login page.'),
+        content: Text('You can now proceed to the order page.'),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(builder: (context) => OrderPage()),
               ); // Go back to the login page
             },
             child: Text('OK'),

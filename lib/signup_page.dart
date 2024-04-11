@@ -23,7 +23,7 @@ class _SignupPageState extends State<SignupPage> {
     super.initState();
     twilioClient = TwilioFlutter(
       accountSid: 'ACef4000326b184edc0aeccfa567a277db',
-      authToken: 'e4e9ddd7e33abda75fbaebbcc97fd4fb',
+      authToken: 'b6c0a31ecc95f8a9b68e5fc66c39413e',
       twilioNumber: '+1 205 236 0176', // Replace with your Twilio phone number
     );
   }
