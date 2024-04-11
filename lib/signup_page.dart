@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 import 'otp_page.dart';
 
 class SignupPage extends StatefulWidget {
@@ -12,6 +14,19 @@ class _SignupPageState extends State<SignupPage> {
   String _name = '';
   String _phoneNumber = '';
   String _password = '';
+  String _otp = '';
+
+  late TwilioFlutter twilioClient;
+
+  @override
+  void initState() {
+    super.initState();
+    twilioClient = TwilioFlutter(
+      accountSid: 'ACef4000326b184edc0aeccfa567a277db',
+      authToken: 'e4e9ddd7e33abda75fbaebbcc97fd4fb',
+      twilioNumber: '+1 205 236 0176', // Replace with your Twilio phone number
+    );
+  }
 
   bool _isPhoneNumberValid(String? value) {
     if (value == null || value.isEmpty) {
@@ -20,20 +35,46 @@ class _SignupPageState extends State<SignupPage> {
     if (value.length != 10) {
       return false;
     }
-    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+    if (!RegExp(r'^\d+$').hasMatch(value)) {
       return false;
     }
     return true;
   }
 
-  void _handleSignup() {
+  String _generateOTP() {
+    return (Random().nextInt(900000) + 100000).toString();
+  }
+
+  Future<bool> _sendOTP(String phoneNumber) async {
+    try {
+      await twilioClient.sendSMS(
+        toNumber: '+91$phoneNumber',
+        messageBody: 'Your OTP is: $_otp',
+      );
+      return true; // OTP sent successfully
+    } catch (e) {
+      print('Error sending OTP: $e');
+      return false; // Failed to send OTP
+    }
+  }
+
+  void _handleSignup() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // All fields are filled, proceed to OTP page
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => OTPPage()),
-      );
+      _otp = _generateOTP();
+      if (await _sendOTP(_phoneNumber)) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OTPPage(otp: _otp)),
+        );
+      } else {
+        // Display an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to send OTP. Please try again.'),
+          ),
+        );
+      }
     }
   }
 

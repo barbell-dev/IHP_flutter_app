@@ -1,44 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:xyz_chocolates/login_page.dart';
 
-class OTPPage extends StatelessWidget {
+class OTPPage extends StatefulWidget {
+  final String otp;
+
+  OTPPage({required this.otp});
+
+  @override
+  _OTPPageState createState() => _OTPPageState();
+}
+
+class _OTPPageState extends State<OTPPage> {
+  final _otpController = TextEditingController();
+
+  void _verifyOTP() {
+    if (_otpController.text == widget.otp) {
+      // OTP verified, proceed with the signup process
+      _showSuccessDialog();
+    } else {
+      // Display an error message
+      _showErrorSnackBar();
+    }
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Registration Successful'),
+        content: Text('You can now proceed to the login page.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              ); // Go back to the login page
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showErrorSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Invalid OTP. Please try again.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('OTP'),
+        title: Text('OTP Verification'),
       ),
-      backgroundColor: Colors.green, // Set background color to green
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'OTP',
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                6,
-                (index) => Container(
-                  width: 40,
-                  height: 40,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    maxLength: 1,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      counter: SizedBox.shrink(),
-                    ),
-                  ),
-                ),
+            TextField(
+              controller: _otpController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Enter OTP',
               ),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: _verifyOTP,
+              child: Text('Verify OTP'),
             ),
           ],
         ),
