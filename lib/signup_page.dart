@@ -16,6 +16,18 @@ class _SignupPageState extends State<SignupPage> {
   String _password = '';
   String _otp = '';
 
+  late TwilioFlutter twilioClient;
+
+  @override
+  void initState() {
+    super.initState();
+    twilioClient = TwilioFlutter(
+      accountSid: 'ACef4000326b184edc0aeccfa567a277db',
+      authToken: 'e4e9ddd7e33abda75fbaebbcc97fd4fb',
+      twilioNumber: '+1 205 236 0176', // Replace with your Twilio phone number
+    );
+  }
+
   bool _isPhoneNumberValid(String? value) {
     if (value == null || value.isEmpty) {
       return false;
@@ -33,11 +45,11 @@ class _SignupPageState extends State<SignupPage> {
     return (Random().nextInt(900000) + 100000).toString();
   }
 
-  Future<bool> _sendOTP(String phoneNumber) async {
+  Future<bool> _sendOTP(String phoneNumber, String _name) async {
     try {
       await twilioClient.sendSMS(
         toNumber: '+91$phoneNumber',
-        messageBody: 'Your OTP is: $_otp',
+        messageBody: 'Hello $_name ! Your OTP is: $_otp',
       );
       return true; // OTP sent successfully
     } catch (e) {
@@ -50,7 +62,7 @@ class _SignupPageState extends State<SignupPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _otp = _generateOTP();
-      if (await _sendOTP(_phoneNumber)) {
+      if (await _sendOTP(_phoneNumber, _name)) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => OTPPage(otp: _otp)),
