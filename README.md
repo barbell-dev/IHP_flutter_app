@@ -1,16 +1,16 @@
-# xyz_chocolates
+Steps to view the application on web browser : 
+  1) Clone the repo.
+  2) Open terminal.
+  3) Navigate to the application's directory.
+  4) Run the command flutter run.
+  5) Choose the browser you want to run the application in.
 
-A new Flutter project.
+Steps to view the application on an android device : 
+  1) Clone the repo.
+  2) Open terminal.
+  3) Navigate to the application's directory.
+  4) Run the command flutter build apk
+  5) Go to the apk-release file in the path : <project's directory>/build/outputs/flutter-apk/apk-release
+  6) You can send the apk-release file to an android device and install the app there.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For any queries , you can reach out to me at varun.dunna2524@gmail.com
