@@ -1,4 +1,4 @@
-APK is provided in the github repo as well . 
+APK is provided with the name : xyz_chocolates_demo.mp4 .
 
 For any queries , you can reach out to me at varun.dunna2524@gmail.com
 
