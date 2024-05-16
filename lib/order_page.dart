@@ -3,10 +3,12 @@ import 'checkout.dart'; // Import the new checkout page
 import 'order.dart';
 
 export 'order_page.dart';
-
+import 'login_page.dart';
 // int totalPrice = 0;
 
 class OrderPage extends StatefulWidget {
+  const OrderPage({Key? key}) : super(key: key);
+
   @override
   _OrderPageState createState() => _OrderPageState();
   static Map<String, int> get prices => _OrderPageState.prices;
@@ -28,12 +30,28 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Page'),
+        title: const Text(
+          'Order Page',
+          style: TextStyle(fontFamily: 'poppinssb'),
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              // Navigate back to the login page
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      LoginPage(), // Replace LoginPage with your login page class
+                ),
+              );
+            },
+          ),
           Stack(
             children: [
               IconButton(
-                icon: Icon(Icons.shopping_bag),
+                icon: const Icon(Icons.shopping_bag),
                 onPressed: () {
                   _showOrdersDialog();
                 },
@@ -57,18 +75,22 @@ class _OrderPageState extends State<OrderPage> {
       ),
       backgroundColor: Colors.blue,
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Select Chocolate:',
-              style: TextStyle(fontSize: 16.0, color: Colors.white),
+            const Text(
+              'Choose your favourite chocolates :',
+              style: TextStyle(
+                  fontSize: 16.0, color: Colors.white, fontFamily: 'poppinssb'),
             ),
             // Chocolate Dropdown
             DropdownButtonFormField<String>(
               value: selectedChocolate,
-              hint: Text('Select Chocolate'),
+              hint: const Text(
+                'Select Chocolate',
+                style: TextStyle(fontFamily: 'poppinssb'),
+              ),
               items: [
                 'Munch',
                 'Dairy Milk',
@@ -80,15 +102,15 @@ class _OrderPageState extends State<OrderPage> {
                   value: value,
                   child: Text(
                     value,
-                    style: TextStyle(
-                        fontFamily: 'GooglePoppins', color: Colors.black),
+                    style: const TextStyle(
+                        fontFamily: 'poppinssb', color: Colors.black),
                   ),
                 );
               }).toList(),
               onChanged: (String? value) {
                 setState(() {
                   selectedChocolate = value;
-                  if (!(_buildVariantItems(selectedChocolate) as List<String>)
+                  if (!(_buildVariantItems(selectedChocolate))
                       .contains(selectedVariant)) {
                     selectedVariant =
                         null; // Reset variant selection only if the previously selected variant is not available for the newly selected chocolate
@@ -97,18 +119,21 @@ class _OrderPageState extends State<OrderPage> {
                 });
               },
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Variant Dropdown
             DropdownButtonFormField<String>(
               value: selectedVariant,
-              hint: Text('Select Variant'),
+              hint: const Text(
+                'Select Variant',
+                style: TextStyle(fontFamily: 'poppinssb'),
+              ),
               items: _buildVariantItems(selectedChocolate).map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(
                     value,
-                    style: TextStyle(
-                        fontFamily: 'GooglePoppins', color: Colors.black),
+                    style: const TextStyle(
+                        fontFamily: 'poppinssb', color: Colors.black),
                   ),
                 );
               }).toList(),
@@ -118,11 +143,12 @@ class _OrderPageState extends State<OrderPage> {
                 });
               },
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Quantity TextField
             TextFormField(
               enabled: true,
-              decoration: InputDecoration(
+              style: TextStyle(fontFamily: 'poppinssb'),
+              decoration: const InputDecoration(
                 labelText: 'Quantity',
                 filled: true,
                 fillColor: Colors.white,
@@ -134,30 +160,34 @@ class _OrderPageState extends State<OrderPage> {
                 });
               },
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Add to Bag Button
-            ElevatedButton(
-              onPressed: _isAddToBagEnabled() ? () => addToBag() : null,
-              child: Text('Add to Bag'),
+            Center(
+              child: ElevatedButton(
+                onPressed: _isAddToBagEnabled() ? () => addToBag() : null,
+                child: const Text('Add to Bag'),
+              ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Pricing Table
             _buildPricingTable(),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             // Checkout Button
-            ElevatedButton(
-              onPressed: bagCount > 0
-                  ? () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CheckoutPage(
-                              orders: orders,
-                              totalPrice:
-                                  _calculateTotalPrice()), // Pass totalPrice
-                        ),
-                      )
-                  : null,
-              child: Text('Checkout'),
+            Center(
+              child: ElevatedButton(
+                onPressed: bagCount > 0
+                    ? () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CheckoutPage(
+                                orders: orders,
+                                totalPrice:
+                                    _calculateTotalPrice()), // Pass totalPrice
+                          ),
+                        )
+                    : null,
+                child: const Text('Checkout'),
+              ),
             ),
           ],
         ),
@@ -170,12 +200,22 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Widget _buildPricingTable() {
-    return DataTable(
-      columns: [
-        DataColumn(label: Text('Variant')),
-        DataColumn(label: Text('Price (INR)')),
-      ],
-      rows: _buildPricingRows(),
+    return Center(
+      child: DataTable(
+        columns: const [
+          DataColumn(
+              label: Text(
+            'Variant',
+            style: TextStyle(fontFamily: 'poppinssb'),
+          )),
+          DataColumn(
+              label: Text(
+            'Price \u{20B9}',
+            style: TextStyle(fontFamily: 'poppinssb'),
+          )),
+        ],
+        rows: _buildPricingRows(),
+      ),
     );
   }
 
@@ -184,10 +224,16 @@ class _OrderPageState extends State<OrderPage> {
     prices.forEach((variant, price) {
       rows.add(DataRow(
         cells: [
-          DataCell(Text(variant)),
+          DataCell(Text(
+            variant,
+            style: TextStyle(fontFamily: 'poppinssb'),
+          )),
           DataCell(Row(
             children: [
-              Text('\u{20B9}$price'),
+              Text(
+                '\u{20B9}$price',
+                style: TextStyle(fontFamily: 'poppinssb'),
+              ),
             ],
           )),
         ],
@@ -247,117 +293,140 @@ class _OrderPageState extends State<OrderPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        int totalPrice = _calculateTotalPrice();
+        double dialogWidth = MediaQuery.of(context).size.width *
+            0.8; // Dynamic width based on screen width
+
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              int totalPrice = _calculateTotalPrice();
-              return Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+          child: Container(
+            width: dialogWidth,
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and close button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Your Orders',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: () {
-                              // setState(() {
-                              //   // Update the bag count when the dialog is closed
-                              //   bagCount = _calculateBagCount();
-                              // });
-                              _updateBagCount();
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.0),
-                      DataTable(
-                        columnSpacing: 8,
-                        columns: [
-                          DataColumn(label: Text('Chocolate')),
-                          DataColumn(label: Text('Variant')),
-                          DataColumn(label: Text('Quantity')),
-                          DataColumn(label: Text('Actions')),
-                        ],
-                        rows: orders.map((order) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(order.chocolate)),
-                              DataCell(Text(order.variant)),
-                              DataCell(Text(order.quantity.toString())),
-                              DataCell(Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.remove),
-                                    onPressed: () {
-                                      setState(() {
-                                        if (order.quantity > 1) {
-                                          // orders.remove(order);
-                                          order.quantity--;
-                                          totalPrice -= _calculatePrice(order);
-                                        } else {
-                                          orders.remove(order);
-                                          totalPrice -= _calculatePrice(order);
-                                        }
-                                        _updateBagCount();
-                                        // Update the bag count immediately after deleting the order
-                                        // setState(() {
-                                        //   bagCount = _calculateBagCount();
-                                        // });
-                                      });
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      setState(() {
-                                        totalPrice -= _calculatePrice(order);
-
-                                        orders.remove(order);
-                                        _updateBagCount();
-                                      });
-                                      // Update the bag count immediately after deleting the order
-                                      // setState(() {
-                                      //   bagCount = _calculateBagCount();
-                                      // });
-                                    },
-                                  ),
-                                ],
-                              )),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                      SizedBox(height: 16.0),
-                      Text(
-                        'Total Price: \u{20B9}$totalPrice',
+                      const Text(
+                        'Your Orders',
                         style: TextStyle(
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          _updateBagCount();
+                          Navigator.pop(context);
+                        },
+                      ),
                     ],
                   ),
-                ),
-              );
-            },
+                  const SizedBox(height: 16.0),
+                  // DataTable displaying orders
+                  DataTable(
+                    columnSpacing: 16.0, // Reduce spacing between columns
+                    columns: [
+                      DataColumn(
+                        label: Text(
+                          'Chocolate',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow:
+                              TextOverflow.ellipsis, // Handle text overflow
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Variant',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          'Quantity',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                    rows: orders.map((order) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(order.chocolate,
+                              overflow: TextOverflow.ellipsis)),
+                          DataCell(Text(
+                              order.variant +
+                                  "                                                                           ",
+                              overflow: TextOverflow.clip)),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: 20.0,
+                                ),
+                                Text(order.quantity.toString(),
+                                    overflow: TextOverflow.ellipsis),
+                                IconButton(
+                                  icon: const Icon(Icons.remove),
+                                  onPressed: () {
+                                    setState(() {
+                                      // Handle remove button
+                                      order.quantity--;
+                                      if (order.quantity <= 0) {
+                                        orders.remove(order);
+                                      }
+                                      _updateBagCount();
+                                      Navigator.pop(context);
+                                      _showOrdersDialog();
+                                    });
+                                    ;
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      // Handle delete button
+                                      orders.remove(order);
+                                      _updateBagCount();
+                                      Navigator.pop(context);
+                                      _showOrdersDialog();
+                                    });
+                                    ;
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 16.0),
+                  // Display total price
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 1.0),
+                      child: Text(
+                        'Total Price: \u{20B9}$totalPrice',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -401,7 +470,7 @@ class _OrderPageState extends State<OrderPage> {
 // }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: OrderPage(),
   ));

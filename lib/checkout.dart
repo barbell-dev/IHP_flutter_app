@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfLib;
 import 'package:path_provider/path_provider.dart';
 import 'order.dart'; // Import the Order class
@@ -55,7 +54,7 @@ class CheckoutPage extends StatelessWidget {
                 headerStyle:
                     pdfLib.TextStyle(fontWeight: pdfLib.FontWeight.bold),
                 cellAlignment: pdfLib.Alignment.centerLeft,
-                cellPadding: pdfLib.EdgeInsets.all(10),
+                cellPadding: const pdfLib.EdgeInsets.all(10),
                 cellStyle: pdfLib.TextStyle(font: pps),
               ),
               pdfLib.SizedBox(height: 20),
@@ -90,14 +89,14 @@ class CheckoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checkout'),
+        title: const Text('Checkout'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Your Cart"),
+            const Text("Your Cart"),
             Expanded(
               child: ListView.builder(
                 itemCount: orders.length,
@@ -107,35 +106,35 @@ class CheckoutPage extends StatelessWidget {
                     child: ListTile(
                       title: Text('Chocolate: ${order.chocolate}'),
                       subtitle: Text(
-                        'Variant: ${order.variant}\nQuantity: ${order.quantity}\nPrice: ${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
+                        'Variant: ${order.variant}\nQuantity: ${order.quantity}\nPrice: \u20B9${order.quantity * (OrderPage.prices[order.variant] ?? 0)}',
                       ),
                     ),
                   );
                 },
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Text(
               'Total price : \u{20B9}$totalPrice',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'poppinssb',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _generateAndOpenPDF,
-              child: Text('Download PDF of your orders'),
+              child: const Text('Download PDF of your orders'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PaymentPage()),
+                  MaterialPageRoute(builder: (context) => const PaymentPage()),
                 );
               },
-              child: Text("Proceed to payment"),
+              child: const Text("Proceed to payment"),
             ),
           ],
         ),
